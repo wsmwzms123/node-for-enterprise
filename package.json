@@ -1,5 +1,13 @@
 {
+  "name": "node-for-enterprise",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/server.js"
+  },
   "dependencies": {
     "express": "^4.17.1"
-  }
+  },
+  "repository": "https://github.com/wsmwzms123/node-for-enterprise.git",
+  "author": "homer.wong <wyg_098123@163.com>",
+  "license": "MIT"
 }
