@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const shopService = require('../services/shop')
-
+const {createShopFormSchema } = require('../moulds/ShopForm')
 class ShopController {
   async init () {
     this.shopService = await shopService()
@@ -37,7 +37,12 @@ class ShopController {
       id: shopId,
       values: { name }
     })
-
+    try {
+      await createShopFormSchema().validate({name})
+    } catch (e) {
+      res.status(400).send({success: false, message: e.message})
+      return
+    }
     if (shopInfo) {
       res.send({ success: true, data: shopInfo })
     } else {
