@@ -1,6 +1,7 @@
 const { Router } = require('express')
+const bodyParser = require('body-parser')
 const shopService = require('../services/shop')
-const {createShopFormSchema } = require('../moulds/ShopForm')
+const {createShopFormSchema } = require('../moulds/shop-form')
 class ShopController {
   async init () {
     this.shopService = await shopService()
@@ -10,6 +11,7 @@ class ShopController {
     router.get('/:shopId', this.getOne)
     router.put('/:shopId', this.put)
     router.delete('/:shopId', this.delete)
+    router.post('/', bodyParser.urlencoded({extended: false}), this.post)
     return router
   }
   // eslint-disable-next-line
@@ -48,6 +50,19 @@ class ShopController {
     } else {
       res.status(404).send({ success: false, data: null})
     }
+  }
+
+  post = async (req, res)  => {
+    const { name } = req.body
+    try {
+      await createShopFormSchema().validate({name})
+    } catch (error) {
+      res.status(400).send({ success: false, message: e.message })
+      return
+    }
+
+    const shopInfo = await this.shopService.create({ values: { name }})
+    res.send({ success: true, data: shopInfo})
   }
 
   delete = async (req, res)  => {

@@ -1,4 +1,4 @@
-import './moulds/ShopForm.js'
+import './moulds/shop-form.js'
 const { createShopFormSchema } = window.moulds
 
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
@@ -17,8 +17,15 @@ export async function refreshShopList () {
     </li>`
   )
   document.querySelector('#root').innerHTML = `
-    <h1>店铺列表</h1>
+    <h1>店铺列表：</h1>
     <ul class="shop-list">${htmlItems.join('')}</ul>
+    <h1>店铺新增：</h1>
+    <form method="post" action="/api/shop">
+      <label>新店铺的名称：</label>
+      <input type="text" name="name" />
+      <button type="submit" data-type="create">确认新增</button>
+      <span class="error"></span>
+    </form>
   `
 }
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
@@ -32,8 +39,34 @@ export async function bindShopInfoEvents () {
       case 'remove':
         await removeShopInfo(e)
         break
+      case 'create':
+        await createShopInfo(e)
+        break
     }
   })
+}
+
+// eslint-disable-next-line node/no-unsupported-features/es-syntax
+export async function createShopInfo (e) {
+  e.preventDefault()
+  const name = e.target.parentElement.querySelector('input[name=name]').value
+
+  try {
+    await createShopFormSchema().validate({ name })
+  } catch ({ message }) {
+    e.target.parentElement.querySelector('.error').innerHTML = message
+    return
+  }
+
+  await window.fetch('/api/shop', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    body: `name=${encodeURIComponent(name)}`
+  })
+
+  await refreshShopList()
 }
 
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
