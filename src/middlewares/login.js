@@ -1,0 +1,30 @@
+const { parse } = require('url')
+
+module.exports = function loginMiddleware (
+  homepagePath = '/',
+  loginPath = '/login.html',
+  whiteList = {
+    '/500.html': ['get'],
+    '/api/health': ['get'],
+    '/api/login': ['post']
+  }
+) {
+  whiteList[loginPath] = ['get']
+
+  return (req, res, next) => {
+    const { pathname } = parse(req.url)
+
+    if (req.session.logined && pathname === loginPath) {
+      return res.redirect(homepagePath)
+    }
+
+    if (req.session.logined ||
+      (whiteList[pathname] &&
+        whiteList[pathname].includes[req.method.toLowerCase()])
+    ) {
+      return next()
+    }
+
+    res.redirect(loginPath)
+  }
+}
