@@ -1,6 +1,7 @@
 const merge = require('lodash.merge')
 
 const config = {
+  // 默认配置
   default: {
     sessionCookieSecret: '842d918ced1888c65a650f993077c3d36b8f114d',
     sessionCookieMaxAge: 7 * 24 * 60 * 60 * 1000,
@@ -15,6 +16,7 @@ const config = {
       '/api/login/github': ['get'],
       '/api/login/github/callback': ['get']
     },
+
     githubStrategyOptions: {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -23,28 +25,36 @@ const config = {
 
     db: {
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory:',
       define: {
         underscored: true
       },
       migrationStorageTableName: 'sequelize_meta'
     }
   },
+
+  // 本地配置
   development: {
     db: {
       storage: 'database/dev.db'
     }
   },
+
+  // 测试配置
   test: {
     db: {
       logging: false
     }
   },
+
+  // 部署配置
   production: {
     sessionCookieMaxAge: 3 * 24 * 60 * 60 * 1000,
+
     githubStrategyOptions: {
       callbackURL: 'http://localhost:9090/api/login/github/callback'
     },
+
     db: {
       storage: 'database/prod.db'
     }
