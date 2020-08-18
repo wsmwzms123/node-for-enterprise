@@ -61,7 +61,8 @@ export async function createShopInfo (e) {
   await window.fetch('/api/shop', {
     method: 'POST',
     headers: {
-      'Content-type': 'application/x-www-form-urlencoded'
+      'Content-type': 'application/x-www-form-urlencoded',
+      'Csrf-Token': window.__CSRF_TOKEN__
     },
     body: `name=${encodeURIComponent(name)}`
   })
@@ -81,7 +82,10 @@ export async function modifyShopInfo (e) {
     return
   }
   await window.fetch(`/api/shop/${shopId}?name=${encodeURIComponent(name)}`, {
-    method: 'PUT'
+    method: 'PUT',
+    headers: {
+      'Csrf-Token': window.__CSRF_TOKEN__
+    }
   })
   await refreshShopList()
 }
@@ -89,6 +93,11 @@ export async function modifyShopInfo (e) {
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
 export async function removeShopInfo (e) {
   const shopId = e.target.parentElement.dataset.shopId
-  await window.fetch(`/api/shop/${shopId}`, { method: 'DELETE' })
+  await window.fetch(`/api/shop/${shopId}`, {
+    method: 'DELETE',
+    headers: {
+      'Csrf-Token': window.__CSRF_TOKEN__
+    }
+  })
   await refreshShopList()
 }
