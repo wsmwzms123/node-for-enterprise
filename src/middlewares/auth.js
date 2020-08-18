@@ -1,15 +1,10 @@
 
 const passport = require('passport')
 const { Strategy: GithubStrategy } = require('passport-github')
-
-const GITHUB_STRATEGY_OPTIONS = {
-  clientID: '0c5fab94376b7d2cfb1b',
-  clientSecret: '3d2509c17b073c2b717b87660996f03f124d6d77',
-  callbackURL: 'http://localhost:9000/api/login/github/callback'
-}
+const { githubStrategyOptions } = require('../config')
 
 const githubStrategy = new GithubStrategy(
-  GITHUB_STRATEGY_OPTIONS,
+  githubStrategyOptions,
   (accessToken, refreshToken, profile, done) => {
     /**
      * 根据 profile 查找或新建 user 信息

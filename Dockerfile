@@ -4,5 +4,5 @@ WORKDIR /usr/app/node-for-enterprise
 COPY . .
 RUN yarn
 
-EXPOSE 9527
-CMD yarn start
+EXPOSE 000
+CMD yarn start:prod
