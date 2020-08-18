@@ -18,14 +18,20 @@ class ShopController {
   }
   // eslint-disable-next-line
   getAll =  cc(async (req, res) =>{
+    const { logging } = req
     const { pageIndex, pageSize } = req.query
-    const shopList = await  this.shopService.find({ pageIndex, pageSize })
+    const shopList = await  this.shopService.find({ 
+      pageIndex,
+      pageSize,
+      logging
+      })
     res.send(escapeHtmlInObject({ success: true, data: shopList }))
   })
 
   getOne = cc(async (req, res) => {
+    const { logging } = req
     const { shopId } = req. params
-    const shopList = await this.shopService.find({id: shopId})
+    const shopList = await this.shopService.find({id: shopId, logging})
 
     if (shopList.length) {
       res.send(escapeHtmlInObject({ success: true, data: shopList[0] }))
@@ -35,11 +41,13 @@ class ShopController {
   })
 
   put = cc(async (req, res) => {
+    const { logging } = req
     const { shopId } = req.params
     const { name } = req.query
     const shopInfo = await this.shopService.modify({
       id: shopId,
-      values: { name }
+      values: { name },
+      logging
     })
     try {
       await createShopFormSchema().validate({name})
@@ -55,6 +63,7 @@ class ShopController {
   })
 
   post = cc(async (req, res)  => {
+    const { logging } = req
     const { name } = req.body
     try {
       await createShopFormSchema().validate({name})
@@ -63,13 +72,14 @@ class ShopController {
       return
     }
 
-    const shopInfo = await this.shopService.create({ values: { name }})
+    const shopInfo = await this.shopService.create({ values: { name }, logging})
     res.send(escapeHtmlInObject({ success: true, data: shopInfo }))
   })
 
   delete = cc(async (req, res)  => {
+    const { logging } = req
     const { shopId } = req.params
-    const success = await this.shopService.remove({ id: shopId })
+    const success = await this.shopService.remove({ id: shopId, logging })
 
     if (!success) {
       res.status(404)

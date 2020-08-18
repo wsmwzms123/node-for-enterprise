@@ -4,22 +4,23 @@ const { Shop } = require('../models')
 class ShopService {
   async init () { }
 
-  async create ({ values }) {
-    return await Shop.create(values)
+  async create ({ values, logging }) {
+    return await Shop.create(values, { logging })
   }
 
-  async find ({ id, pageIndex = 0, pageSize = 10 }) {
+  async find ({ id, pageIndex = 0, pageSize = 10, logging }) {
     if (id) {
-      return [await Shop.findByPk(id)]
+      return [await Shop.findByPk(id, { logging })]
     }
 
     return await Shop.findAll({
       offset: pageIndex * pageSize,
-      limit: pageSize
+      limit: pageSize,
+      logging
     })
   }
 
-  async modify ({ id, values }) {
+  async modify ({ id, values, logging }) {
     const target = await Shop.findByPk(id)
 
     if (!target) {
@@ -28,17 +29,17 @@ class ShopService {
 
     Object.assign(target, values)
     console.log(target)
-    return await target.save()
+    return await target.save({ logging })
   }
 
-  async remove ({ id }) {
+  async remove ({ id, logging }) {
     const target = await Shop.findByPk(id)
 
     if (!target) {
       return false
     }
 
-    return target.destroy()
+    return target.destroy({ logging })
   }
 }
 let service
